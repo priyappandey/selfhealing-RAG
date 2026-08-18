@@ -40,35 +40,31 @@ with st.sidebar:
     st.subheader("Ask About")
 
     st.markdown("""
-- Admissions
-- Fee Structure
-- Faculty Information
-- Academic Calendar
-- Student Policies
-- Scholarships
-- JEE Preparation
-- NEET Preparation
-- Study Material
-- Batch Timings
+- 📌 Admissions
+- 💰 Fee Structure
+- 👨‍🏫 Faculty Information
+- 📅 Academic Calendar
+- 📖 Student Policies
+- 🎓 Scholarships
+- 📚 Study Materials
+- 📝 Batch Timings
+- 🚀 JEE Preparation
+- 🩺 NEET Preparation
 """)
 
     st.markdown("---")
 
-    # Test Backend
-    try:
-        health = requests.get(f"{BACKEND_URL}/health", timeout=5)
-
-        if health.status_code == 200:
-            st.success("🟢 Backend Connected")
-        else:
-            st.error("🔴 Backend Not Healthy")
-    except Exception as e:
-        st.error("🔴 Backend Offline")
-        st.caption(str(e))
+    st.info(
+        "💡 Tip:\n\n"
+        "Ask complete questions like:\n\n"
+        "• What is the JEE fee?\n"
+        "• Tell me about scholarships.\n"
+        "• Show batch timings."
+    )
 
     st.markdown("---")
 
-    if st.button("🗑️ Clear Chat"):
+    if st.button("🗑️ Clear Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
@@ -78,26 +74,36 @@ with st.sidebar:
 
 st.title("🎓 AI Academic Assistant")
 
-st.write(
+st.markdown(
 """
 Welcome!
 
 Ask anything related to:
 
-- Admissions
-- Fees
-- Scholarships
-- Faculty
-- Academic Calendar
-- Student Policies
-- JEE Preparation
-- NEET Preparation
-- Study Materials
+✅ Admissions
+
+✅ Fee Structure
+
+✅ Scholarships
+
+✅ Faculty Information
+
+✅ Academic Calendar
+
+✅ Student Policies
+
+✅ JEE Preparation
+
+✅ NEET Preparation
+
+✅ Study Materials
+
+---
 """
 )
 
 # ----------------------------------
-# Show Chat History
+# Display Previous Messages
 # ----------------------------------
 
 for message in st.session_state.messages:
@@ -106,13 +112,15 @@ for message in st.session_state.messages:
         st.write(message["content"])
 
 # ----------------------------------
-# Chat Input
+# User Input
 # ----------------------------------
 
-user_message = st.chat_input("Ask your question...")
+user_message = st.chat_input(
+    "Ask your academic question..."
+)
 
 # ----------------------------------
-# Handle Chat
+# Handle User Query
 # ----------------------------------
 
 if user_message:
@@ -147,36 +155,60 @@ if user_message:
                     timeout=120
                 )
 
-                # Debug info
-                st.caption(f"Calling: {url}")
-                st.caption(f"Status Code: {response.status_code}")
-
                 if response.status_code == 200:
 
                     data = response.json()
 
-                    ai_reply = data.get("reply", "No reply received.")
+                    ai_reply = data.get(
+                        "reply",
+                        "No response received."
+                    )
 
                     st.write(ai_reply)
 
-                    # Optional Sources
-                    if "sources" in data and data["sources"]:
-                        st.markdown("### 📄 Sources")
-                        for source in data["sources"]:
-                            st.write(f"• {source}")
+                    # Display Sources
+                    if data.get("sources"):
+
+                        with st.expander(
+                            "📄 Sources Used"
+                        ):
+
+                            for source in data["sources"]:
+
+                                st.markdown(
+                                    f"- **{source}**"
+                                )
 
                 else:
 
                     ai_reply = (
-                        f"Backend Error ({response.status_code})\n\n"
-                        f"{response.text}"
+                        f"Backend Error ({response.status_code})"
                     )
 
                     st.error(ai_reply)
 
+            except requests.exceptions.Timeout:
+
+                ai_reply = (
+                    "Request timed out. "
+                    "Please try again."
+                )
+
+                st.error(ai_reply)
+
+            except requests.exceptions.ConnectionError:
+
+                ai_reply = (
+                    "Unable to connect to the backend server."
+                )
+
+                st.error(ai_reply)
+
             except Exception as e:
 
-                ai_reply = str(e)
+                ai_reply = (
+                    f"Unexpected Error:\n\n{str(e)}"
+                )
 
                 st.error(ai_reply)
 
