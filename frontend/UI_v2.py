@@ -8,7 +8,7 @@ st.title("🚀 VERSION 22 JULY DEBUG")
 try:
     BACKEND_URL = st.secrets["BACKEND_URL"].rstrip("/")
 except Exception:
-    BACKEND_URL = "https://self-healing-two-production-2677.up.railway.app"
+    BACKEND_URL = "https://selfhealing-rag-production.up.railway.app"
 
 # ----------------------------------
 # Page Config
