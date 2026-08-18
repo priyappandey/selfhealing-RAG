@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-st.title("🚀 VERSION 22 JULY DEBUG")
+
 # ----------------------------------
 # Backend URL
 # ----------------------------------
